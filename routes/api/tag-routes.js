@@ -7,10 +7,12 @@ router.get('/', (req, res) => {
   // find all tags
   // be sure to include its associated Product data
   Tag.findAll({
-    include: {
+    include: [
+      {
       model: Product,
-        attributes: ['id', 'product_name', 'price', 'stock', 'category_id']
-      }
+        through: ProductTag,
+      },
+    ],
   })
   .then(dbTagData => res.json(dbTagData))
   .catch(err => {
@@ -26,11 +28,12 @@ router.get('/:id', (req, res) => {
     where: {
       id: req.params.id
     },
-    include: 
+    include: [
       {
         model: Product,
-        attributes: ['product_name', 'price', 'stock', 'category_id']
-      }
+       through: ProductTag,
+      },
+    ],
   })
   .then(dbTagData => res.json(dbTagData) 
   .catch(err => {
@@ -76,7 +79,7 @@ router.delete('/:id', (req, res) => {
   Tag.destroy({
     where: {
       id: req.params.id
-    }
+    },
   })
   .then(dbTagData => {
     if (!dbTagData) {
